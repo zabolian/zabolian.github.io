@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mohammad Zabolian</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f0f0f;
+      color: #e5e5e5;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── canvas background ── */
+    #bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ── fade-in on load ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero, .content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem 2rem 3rem;
+      text-align: center;
+      animation: fadeUp 0.9s ease both;
+    }
+
+    /* ── avatar ── */
+    @keyframes avatarIn {
+      from { opacity: 0; transform: scale(0.85); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 18px 4px rgba(120,120,200,0.12); }
+      50%       { box-shadow: 0 0 32px 8px rgba(120,120,200,0.25); }
+    }
+
+    .avatar {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      border: 2px solid #333;
+      margin-bottom: 1.75rem;
+      object-fit: cover;
+      animation: avatarIn 0.8s ease both, glow 4s ease-in-out 1s infinite;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.4rem;
+    }
+
+    .role {
+      font-size: 0.95rem;
+      color: #888;
+      margin-bottom: 1rem;
+    }
+
+    .bio {
+      max-width: 520px;
+      font-size: 0.95rem;
+      line-height: 1.75;
+      color: #aaa;
+      margin-bottom: 2rem;
+    }
+
+    /* ── links ── */
+    .links {
+      display: flex;
+      gap: 0.6rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .links a {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 1rem;
+      border: 1px solid #2a2a2a;
+      border-radius: 6px;
+      color: #bbb;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: border-color 0.2s, color 0.2s, transform 0.15s;
+    }
+
+    .links a:hover {
+      border-color: #555;
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .links a svg { width: 15px; height: 15px; fill: currentColor; flex-shrink: 0; }
+
+    /* ── content ── */
+    .content {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 2rem 4rem;
+    }
+
+    .section {
+      margin-bottom: 2.5rem;
+      animation: fadeUp 0.9s ease both;
+    }
+
+    .section:nth-child(2) { animation-delay: 0.15s; }
+    .section:nth-child(3) { animation-delay: 0.3s; }
+
+    .section h2 {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #555;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #1e1e1e;
+    }
+
+    .timeline { display: flex; flex-direction: column; gap: 1.25rem; }
+
+    .entry { display: flex; gap: 1rem; }
+
+    .entry-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #333;
+      margin-top: 0.45rem;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+
+    .entry:hover .entry-dot { background: #666; }
+
+    .entry-body { flex: 1; }
+
+    .entry-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #e5e5e5;
+    }
+
+    .entry-title a { color: inherit; text-decoration: none; }
+    .entry-title a:hover { color: #fff; text-decoration: underline; }
+
+    .entry-sub {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 0.15rem;
+    }
+
+    .entry-desc {
+      font-size: 0.88rem;
+      color: #888;
+      margin-top: 0.35rem;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="bg"></canvas>
+
+  <div class="hero">
+    <img class="avatar" src="avatar.png" alt="Mohammad Zabolian" />
+    <h1>Mohammad Zabolian</h1>
+    <p class="role">Founder &amp; CEO · Product Leader · PhD, Sharif University of Technology</p>
+    <p class="bio">
+      Building <a href="https://panjereh.io" target="_blank" style="color:#ccc;text-decoration:underline;">Panjereh</a> —
+      a new way to connect people and businesses.<br />
+      Former CPO at Balad, Single-Threaded Leader at Divar, VP of Product at Yektanet.<br />
+      Researcher in Computer Software Engineering at Sharif.
+    </p>
+    <div class="links">
+      <a href="mailto:zabolian@gmail.com">
+        <svg viewBox="0 0 24 24"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-.9.732-1.636 1.636-1.636h.749L12 11.73l9.615-7.91h.749A1.636 1.636 0 0 1 24 5.457z"/></svg>
+        Gmail
+      </a>
+      <a href="https://github.com/zabolian" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        GitHub
+      </a>
+      <a href="https://linkedin.com/in/zabolian" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        LinkedIn
+      </a>
+      <a href="https://t.me/zabolian" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+        Telegram
+      </a>
+      <a href="https://instagram.com/zabolian" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+        Instagram
+      </a>
+      <a href="https://twitter.com/zabolian" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        Twitter
+      </a>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="section">
+      <h2>Experience</h2>
+      <div class="timeline">
+        <div class="entry">
+          <div class="entry-dot"></div>
+          <div class="entry-body">
+            <div class="entry-title"><a href="https://panjereh.io" target="_blank">Panjereh</a> — Founder &amp; CEO</div>
+            <div class="entry-sub">Feb 2024 – Present · Tehran, Iran</div>
+          </div>
+        </div>
+        <div class="entry">
+          <div class="entry-dot"></div>
+          <div class="entry-body">
+            <div class="entry-title">Yektanet — VP of Product</div>
+            <div class="entry-sub">Aug 2024 – Feb 2026 · Tehran, Iran</div>
+          </div>
+        </div>
+        <div class="entry">
+          <div class="entry-dot"></div>
+          <div class="entry-body">
+            <div class="entry-title">Yektanet — Product Director</div>
+            <div class="entry-sub">Jan 2024 – Aug 2024 · Tehran, Iran</div>
+          </div>
+        </div>
+        <div class="entry">
+          <div class="entry-dot"></div>
+          <div class="entry-body">
+            <div class="entry-title">Divar — Single-Threaded Leader</div>
+            <div class="entry-sub">Jan 2023 – Jan 2024 · Tehran, Iran</div>
+          </div>
+        </div>
+        <div class="entry">
+          <div class="entry-dot"></div>
+          <div class="entry-body">
+            <div class="entry-title">Balad — Chief Product Officer</div>
+            <div class="entry-sub">Nov 2021 – Jan 2023 · Tehran, Iran</div>
+            <div class="entry-desc">CPO of navigation at Balad — Iran's leading maps &amp; navigation app.</div>
+          </div>
+        </div>
+        <div class="entry">
+          <div class="entry-dot"></div>
+          <div class="entry-body">
+            <div class="entry-title">Balad — Product Manager</div>
+            <div class="entry-sub">Jun 2020 – Nov 2021</div>
+          </div>
+        </div>
+        <div class="entry">
+          <div class="entry-dot"></div>
+          <div class="entry-body">
+            <div class="entry-title">Balad — Back End Developer</div>
+            <div class="entry-sub">Feb 2020 – Jun 2020</div>
+          </div>
+        </div>
+        <div class="entry">
+          <div class="entry-dot"></div>
+          <div class="entry-body">
+            <div class="entry-title">Balad — R&amp;D Engineer</div>
+            <div class="entry-sub">Jul 2019 – Feb 2020</div>
+          </div>
+        </div>
+        <div class="entry">
+          <div class="entry-dot"></div>
+          <div class="entry-body">
+            <div class="entry-title">Sharif University of Technology — Teaching Assistant</div>
+            <div class="entry-sub">Feb 2018 – Feb 2023</div>
+            <div class="entry-desc">Discrete Structures · Algorithmic Game Theory · Fundamentals of Programming</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Education</h2>
+      <div class="timeline">
+        <div class="entry">
+          <div class="entry-dot"></div>
+          <div class="entry-body">
+            <div class="entry-title">Sharif University of Technology</div>
+            <div class="entry-sub">PhD, Computer Software Engineering · 2019 – 2023</div>
+          </div>
+        </div>
+        <div class="entry">
+          <div class="entry-dot"></div>
+          <div class="entry-body">
+            <div class="entry-title">Sharif University of Technology</div>
+            <div class="entry-sub">MSc, Computer Software Engineering · 2017 – 2019</div>
+          </div>
+        </div>
+        <div class="entry">
+          <div class="entry-dot"></div>
+          <div class="entry-body">
+            <div class="entry-title">Sharif University of Technology</div>
+            <div class="entry-sub">BSc, Computer Software Engineering · 2011 – 2016</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const canvas = document.getElementById('bg');
+    const ctx = canvas.getContext('2d');
+
+    let W, H, particles;
+
+    function resize() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+
+    function randomBetween(a, b) {
+      return a + Math.random() * (b - a);
+    }
+
+    function initParticles() {
+      particles = Array.from({ length: 55 }, () => ({
+        x: randomBetween(0, W),
+        y: randomBetween(0, H),
+        r: randomBetween(0.8, 2.2),
+        vx: randomBetween(-0.12, 0.12),
+        vy: randomBetween(-0.18, -0.05),
+        alpha: randomBetween(0.08, 0.35),
+      }));
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+
+      for (const p of particles) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(160,160,220,${p.alpha})`;
+        ctx.fill();
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.y < -5) { p.y = H + 5; p.x = randomBetween(0, W); }
+        if (p.x < -5) p.x = W + 5;
+        if (p.x > W + 5) p.x = -5;
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    window.addEventListener('resize', () => { resize(); initParticles(); });
+    resize();
+    initParticles();
+    draw();
+  </script>
+
+</body>
+</html>
