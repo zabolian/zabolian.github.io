@@ -63,7 +63,14 @@
       border: 2px solid #333;
       margin-bottom: 1.75rem;
       object-fit: cover;
+      cursor: pointer;
       animation: avatarIn 0.8s ease both, glow 4s ease-in-out 1s infinite;
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.3s;
+    }
+
+    .avatar:hover {
+      transform: scale(1.18);
+      border-color: #666;
     }
 
     h1 {
@@ -121,6 +128,27 @@
       max-width: 680px;
       margin: 0 auto;
       padding: 0 2rem 4rem;
+    }
+
+    /* ── responsive ── */
+    @media (max-width: 600px) {
+      .hero { padding: 3rem 1.25rem 2rem; }
+
+      .avatar { width: 120px; height: 120px; }
+
+      h1 { font-size: 1.5rem; }
+
+      .role { font-size: 0.85rem; }
+
+      .bio { font-size: 0.88rem; }
+
+      .links a { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
+
+      .content { padding: 0 1.25rem 3rem; }
+
+      .entry-title { font-size: 0.88rem; }
+
+      .entry-sub { font-size: 0.78rem; }
     }
 
     .section {
